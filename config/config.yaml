@@ -1,0 +1,79 @@
+# Configuration for Accommodation Speech Detection System
+
+# Dataset configuration
+dataset:
+  base_path: "datasets/Elderspeak"
+  accommodation_types:
+    ToE:
+      name: "Terms of Endearment"
+      path: "ToE/terms_of_endearment_dataset_refined_v2.json"
+    # Add more accommodation types here as needed
+  encoding: "utf-8"
+
+# Model configuration
+models:
+  default: "gpt-4"
+  available: ["gpt-4", "gpt-3.5-turbo", "gpt-4-turbo"]
+  temperature: 0
+  max_tokens: 2
+  
+# API configuration  
+api:
+  base_url: "https://api.openai.com/v1/chat/completions"
+  rate_limit_delay: 0.5  # seconds between requests
+  timeout: 30  # seconds
+  max_retries: 3
+
+# Cross-validation configuration
+cross_validation:
+  n_folds: 3
+  n_repeats: 3
+  validation_split_ratio: 0.2
+  random_seed_base: 42
+  stratified: true
+
+# Prompt optimization configuration
+prompt_optimization:
+  enabled: true
+  validation_samples: 10
+  accuracy_threshold: 0.95
+  recall_threshold: 0.8
+  precision_threshold: 0.9
+  
+# Prompts for different accommodation types
+prompts:
+  ToE:
+    initial: |
+      You are an expert in analyzing eldercare communication for inappropriate terms of endearment.
+
+      Detect if text contains terms that infantilize elderly care recipients:
+      - Pet names (honey, sweetie, darling, sugar, baby, ちゃん suffix)
+      - Baby talk ("good boy/girl", "cutie", いい子, えらい)
+      - Patronizing tone treating adults as children
+      - Infantilizing expressions (よしよし, なでなで, あーん)
+
+      Appropriate communication uses:
+      - Respectful titles (Mr./Mrs./Ms. + surname, -san, -sama, 様)
+      - Professional, dignified language
+
+      Examples:
+      - "山田ちゃん、いい子だね" → 1 (infantilizing)
+      - "山田さん、お薬の時間です" → 0 (respectful)
+      - "よしよし、えらいね" → 1 (baby talk)
+      - "お疲れ様でした" → 0 (professional)
+
+      Analyze the text and respond with ONLY "1" (harmful) or "0" (safe).
+  
+# Output configuration
+output:
+  results_dir: "results"
+  checkpoint_enabled: true
+  checkpoint_file: "checkpoint.json"
+  save_predictions: true
+  max_predictions_to_save: 20
+  
+# Logging configuration
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "evaluation.log"
