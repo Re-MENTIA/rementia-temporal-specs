@@ -1,0 +1,42 @@
+{
+  "accommodation": {
+    "detector_name": "AccommodationSpeechDetector",
+    "prompt": "You are evaluating whether communication contains inappropriate terms of endearment or diminutives in an eldercare context.\n\nINAPPROPRIATE (return \"1\"):\n- Pet names: honey, sweetie, dear, darling, sugar\n- Diminutives that infantilize: little one, cutie\n- Familial terms used for non-family: grandma, grandpa when not actual family\n- Any terms that don't respect the dignity of older adults\n\nAPPROPRIATE (return \"0\"):\n- Formal titles: Mr./Mrs./Ms. with last name\n- Professional titles: Doctor, Professor\n- First names when permission is given\n- Respectful Japanese honorifics: -san, -sama\n\nAnalyze the text and respond with ONLY \"1\" (inappropriate) or \"0\" (appropriate).",
+    "validation_accuracy": 0.85,
+    "full_dataset_accuracy": 0.857,
+    "metrics": {
+      "precision_1": 0.823,
+      "recall_1": 0.889,
+      "f1_1": 0.855
+    }
+  },
+  "episode_memory": {
+    "detector_name": "EpisodeMemoryDetector", 
+    "prompt": "You are an expert in memory classification, specifically distinguishing between episodic and non-episodic memory requirements.\n\nEPISODIC MEMORY (personal experiences with specific time/place context):\nQuestions requiring recall of:\n- Personal past events (\"What did you do yesterday?\")\n- Specific experiences (\"How was your doctor's appointment?\")\n- Time-specific activities (\"What did you eat for breakfast?\")\n- Location-specific memories (\"Where did you go last week?\")\n\nKEY FEATURES:\n- Autobiographical in nature\n- Has temporal context (when it happened)\n- Has spatial context (where it happened)\n- Involves \"mental time travel\" to re-experience\n\nNON-EPISODIC MEMORY (general knowledge, preferences, facts):\n- Semantic memory: Facts, concepts (\"What is the capital of Japan?\")\n- Preferences: Likes/dislikes (\"Do you like coffee?\")\n- Skills: How to do things (\"How do you tie shoes?\")\n- Current states: Present feelings (\"Are you comfortable?\")\n\nEXAMPLES:\n\nEpisodic (return \"1\"):\n- \"昨日の夕食で何を食べましたか？\" → 1\n- \"先週の病院はどうでしたか？\" → 1\n- \"今朝どこに行きましたか？\" → 1\n\nNon-episodic (return \"0\"):\n- \"犬と猫、どちらが好きですか？\" → 0\n- \"コーヒーはお好きですか？\" → 0 \n- \"今日は暖かいですね\" → 0\n\nAnalyze the sentence and respond with ONLY \"1\" (episodic memory) or \"0\" (non-episodic memory).",
+    "validation_accuracy": 0.978,
+    "full_dataset_accuracy": 0.978,
+    "metrics": {
+      "precision_1": 0.941,
+      "recall_1": 1.0,
+      "f1_1": 0.97
+    }
+  },
+  "open_end_question": {
+    "detector_name": "OpenEndQuestionDetector",
+    "prompt": "You are an expert in question classification and conversational analysis.\n\nOPEN-ENDED QUESTIONS: Questions that allow respondents to answer freely in their own words without restricting the range of possible responses. These questions encourage detailed, elaborative answers and personal opinions or experiences.\n\nKey features of open-ended questions:\n- No predetermined answer choices\n- Require explanation, description, or opinion\n- Often start with \"What,\" \"How,\" \"Why,\" or \"Tell me about...\"\n- Encourage detailed responses\n- Allow for unexpected or creative answers\n\nCLOSED-ENDED QUESTIONS: Questions that require specific, limited responses such as YES/NO, predetermined choices, or numerical values. These questions have a restricted range of possible answers.\n\nKey features of closed-ended questions:\n- Limited answer options (YES/NO, multiple choice, scales)\n- Quick, specific responses expected\n- Often start with \"Do,\" \"Is,\" \"Have,\" \"Will,\" \"Can\"\n- Binary choices or selections from given options\n- Factual, confirmatory nature\n\nNEUTRAL STATEMENTS: Sentences that are not questions at all - they are declarations, observations, or statements of fact.\n\nEXAMPLES:\n\nOpen-ended questions (return \"1\"):\n- \"最近のニュースで気になったことは何ですか？\" → 1 (asks for personal thoughts)\n- \"How do you usually spend your weekends?\" → 1 (requires descriptive answer)\n- \"趣味は何ですか？\" → 1 (allows various responses)\n- \"What makes you happiest in life?\" → 1 (encourages reflection)\n- \"どんな音楽をよく聴きますか？\" → 1 (open to elaboration)\n\nClosed-ended questions (return \"0\"):\n- \"ニュースはもう見ましたか？\" → 0 (YES/NO question)\n- \"Do you like sports?\" → 0 (YES/NO expected)\n- \"コーヒーと紅茶では、どちらが好きですか？\" → 0 (binary choice)\n- \"明日の会議に出席できますか？\" → 0 (YES/NO response)\n- \"Is today's weather nice?\" → 0 (YES/NO answer)\n\nNeutral statements (return \"0\"):\n- \"今日は本当に暑い一日だ。\" → 0 (statement, not a question)\n- \"Technology is advancing rapidly.\" → 0 (observation)\n- \"彼は毎晩11時には寝る習慣がある。\" → 0 (factual statement)\n- \"The new cafe opened last week.\" → 0 (information)\n\nAnalyze the sentence and respond with ONLY \"1\" (open-ended question) or \"0\" (closed-ended question or non-question).",
+    "validation_accuracy": 1.0,
+    "full_dataset_accuracy": 1.0,
+    "metrics": {
+      "precision_1": 1.0,
+      "recall_1": 1.0,
+      "f1_1": 1.0
+    }
+  },
+  "long_speech": {
+    "detector_name": "LongSpeechDetector",
+    "prompt": "You are an expert in cognitive accessibility and eldercare communication.\n\nTASK: Detect if a sentence is too long or complex for individuals with cognitive impairments.\n\nLONG/COMPLEX SENTENCES (return \"1\"):\n- Multiple clauses or ideas combined in one sentence\n- Contains multiple instructions or pieces of information\n- Requires processing several concepts simultaneously\n- Uses complex conjunctions or conditional statements\n- Length makes it difficult to remember the beginning by the end\n\nSHORT/SIMPLE SENTENCES (return \"0\"):\n- Single, clear idea or instruction\n- Direct and concise communication\n- Easy to process and remember\n- One action or concept at a time\n- Appropriate length for cognitive accessibility\n\nEXAMPLES:\n\nToo Long/Complex (return \"1\"):\n- \"今日は晴れて気温も高いので帽子をかぶって水分をしっかり取りませんか？\" → 1 (multiple instructions)\n- \"駅前の道が工事中で迂回が必要だから、早めに家を出て余裕を持ったほうがいいよね？\" → 1 (complex reasoning)\n- \"図書館で調べ物を済ませたら向かいのカフェで休憩して、そのあと映画を観に行きませんか？\" → 1 (sequential activities)\n\nShort/Simple (return \"0\"):\n- \"今日は暑いね。\" → 0 (single observation)\n- \"コーヒー飲む？\" → 0 (simple question)\n- \"ドア閉めて。\" → 0 (single instruction)\n- \"元気ですか？\" → 0 (simple inquiry)\n\nAnalyze the sentence and respond with ONLY \"1\" (too long/complex) or \"0\" (short/simple).",
+    "validation_accuracy": null,
+    "full_dataset_accuracy": null,
+    "metrics": {}
+  }
+}

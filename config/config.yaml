@@ -2,18 +2,65 @@
 
 # Dataset configuration
 dataset:
-  base_path: "datasets/Elderspeak"
-  accommodation_types:
-    ToE:
-      name: "Terms of Endearment"
-      path: "ToE/terms_of_endearment_dataset_refined_v2.json"
-    # Add more accommodation types here as needed
+  base_path: "datasets"
   encoding: "utf-8"
+  
+# Task-specific configurations
+tasks:
+  accommodation_speech:
+    base_path: "datasets/Elderspeak"
+    types:
+      ToE:
+        name: "Terms of Endearment"
+        path: "ToE/terms_of_endearment_dataset_refined_v2.json"
+        labels: ["0", "1"]  # 0=safe, 1=harmful
+  
+  episode_detection:
+    base_path: "datasets/episode-open-end-Q"
+    types:
+      episode_memory:
+        name: "Episode Memory Detection"
+        path: "episode-memory/episode_memory_dataset.json"
+        labels: ["0", "1"]  # 0=not episodic, 1=episodic
+        label_field: "is_epsodic_memory_related"  # Different field name (typo in original dataset)
+        input_field: "sentence"  # Different input field name
+        label_mapping:  # Convert from dataset labels to binary
+          "true": "1"
+          "false": "0"
+          "neutral": "0"
+  
+  question_detection:
+    base_path: "datasets/episode-open-end-Q"
+    types:
+      open_end:
+      
+        name: "Open-End Question Detection"
+        path: "open-end-Q/open_end_Q_dataset.json"
+        labels: ["0", "1"]  # 0=closed-ended, 1=open-ended
+        label_field: "question_type"
+        input_field: "sentence"
+        label_mapping:
+          "open-ended": "1"
+          "closed-ended": "0"
+          "neutral": "0"  # Non-questions
+  
+  long_speech_detection:
+    base_path: "datasets/long-speech"
+    types:
+      long_speech:
+        name: "Long Speech Detection"
+        path: "long_speech_dataset.json"
+        labels: ["0", "1"]  # 0=short/appropriate, 1=too long
+        label_field: "is_too_long?"
+        input_field: "sentences"
+        label_mapping:
+          "False": "0"
+          "True": "1"
 
 # Model configuration
 models:
-  default: "gpt-4"
-  available: ["gpt-4", "gpt-3.5-turbo", "gpt-4-turbo"]
+  default: "gpt-4.1-mini"
+  available: ["gpt-4.1-mini", "o4-mini-2025-04-16"]
   temperature: 0
   max_tokens: 2
   
@@ -63,6 +110,124 @@ prompts:
       - "お疲れ様でした" → 0 (professional)
 
       Analyze the text and respond with ONLY "1" (harmful) or "0" (safe).
+  
+  episode_memory:
+    initial: |
+      You are an expert in cognitive neuroscience, specializing in memory classification.
+
+      EPISODIC MEMORY: Personal memories of specific events that an individual has experienced. The key characteristic is that these memories contain not only "what" happened, but also the integrated contextual details of "when," "where," and "in what situation" the event occurred. These are autobiographical experiences tied to specific spatiotemporal contexts.
+
+      Key features of episodic memory:
+      - Personal experience (first-person perspective)
+      - Specific time and place
+      - Contextual details (emotions, sensory details, situations)
+      - Autobiographical nature
+
+      NON-EPISODIC MEMORY includes:
+      - Semantic memory: General knowledge, facts, vocabulary (context-independent)
+      - Procedural memory: Skills, habits, how-to knowledge
+      - Future plans, speculations, hypothetical scenarios
+      - General observations without personal experience
+
+      EXAMPLES:
+
+      Episodic memory (return "1"):
+      - "I still remember taking a photo at the school gate on my elementary school entrance ceremony day" → 1 (specific personal event with clear time/place)
+      - "去年のクリスマスに家族で旅行した時のことを覚えている？" → 1 (personal experience with temporal marker)
+      - "The excitement and anxiety I felt on my first airplane ride" → 1 (personal experience with emotions)
+      - "昨日の会議でみんなからどんな意見が出たか、覚えてる？" → 1 (specific recent event)
+
+      Non-episodic memory (return "0"):
+      - "Mt. Fuji is the highest mountain in Japan" → 0 (semantic memory - general fact)
+      - "地球が太陽の周りを回る周期は約365日です" → 0 (scientific knowledge)
+      - "Once you learn how to ride a bicycle, you never forget" → 0 (procedural memory)
+      - "It might rain today" → 0 (future speculation)
+      - "A new cafe opened recently" → 0 (general observation without personal experience)
+
+      Analyze the sentence and respond with ONLY "1" (episodic memory) or "0" (non-episodic memory).
+  
+  open_end:
+    initial: |
+      You are an expert in question classification and conversational analysis.
+
+      OPEN-ENDED QUESTIONS: Questions that allow respondents to answer freely in their own words without restricting the range of possible responses. These questions encourage detailed, elaborative answers and personal opinions or experiences.
+
+      Key features of open-ended questions:
+      - No predetermined answer choices
+      - Require explanation, description, or opinion
+      - Often start with "What," "How," "Why," or "Tell me about..."
+      - Encourage detailed responses
+      - Allow for unexpected or creative answers
+
+      CLOSED-ENDED QUESTIONS: Questions that require specific, limited responses such as YES/NO, predetermined choices, or numerical values. These questions have a restricted range of possible answers.
+
+      Key features of closed-ended questions:
+      - Limited answer options (YES/NO, multiple choice, scales)
+      - Quick, specific responses expected
+      - Often start with "Do," "Is," "Have," "Will," "Can"
+      - Binary choices or selections from given options
+      - Factual, confirmatory nature
+
+      NEUTRAL STATEMENTS: Sentences that are not questions at all - they are declarations, observations, or statements of fact.
+
+      EXAMPLES:
+
+      Open-ended questions (return "1"):
+      - "最近のニュースで気になったことは何ですか？" → 1 (asks for personal thoughts)
+      - "How do you usually spend your weekends?" → 1 (requires descriptive answer)
+      - "趣味は何ですか？" → 1 (allows various responses)
+      - "What makes you happiest in life?" → 1 (encourages reflection)
+      - "どんな音楽をよく聴きますか？" → 1 (open to elaboration)
+
+      Closed-ended questions (return "0"):
+      - "ニュースはもう見ましたか？" → 0 (YES/NO question)
+      - "Do you like sports?" → 0 (YES/NO expected)
+      - "コーヒーと紅茶では、どちらが好きですか？" → 0 (binary choice)
+      - "明日の会議に出席できますか？" → 0 (YES/NO response)
+      - "Is today's weather nice?" → 0 (YES/NO answer)
+
+      Neutral statements (return "0"):
+      - "今日は本当に暑い一日だ。" → 0 (statement, not a question)
+      - "Technology is advancing rapidly." → 0 (observation)
+      - "彼は毎晩11時には寝る習慣がある。" → 0 (factual statement)
+      - "The new cafe opened last week." → 0 (information)
+
+      Analyze the sentence and respond with ONLY "1" (open-ended question) or "0" (closed-ended question or non-question).
+  
+  long_speech:
+    initial: |
+      You are an expert in cognitive accessibility and eldercare communication.
+
+      TASK: Detect if a sentence is too long or complex for individuals with cognitive impairments.
+
+      LONG/COMPLEX SENTENCES (return "1"):
+      - Multiple clauses or ideas combined in one sentence
+      - Contains multiple instructions or pieces of information
+      - Requires processing several concepts simultaneously
+      - Uses complex conjunctions or conditional statements
+      - Length makes it difficult to remember the beginning by the end
+
+      SHORT/SIMPLE SENTENCES (return "0"):
+      - Single, clear idea or instruction
+      - Direct and concise communication
+      - Easy to process and remember
+      - One action or concept at a time
+      - Appropriate length for cognitive accessibility
+
+      EXAMPLES:
+
+      Too Long/Complex (return "1"):
+      - "今日は晴れて気温も高いので帽子をかぶって水分をしっかり取りませんか？" → 1 (multiple instructions)
+      - "駅前の道が工事中で迂回が必要だから、早めに家を出て余裕を持ったほうがいいよね？" → 1 (complex reasoning)
+      - "図書館で調べ物を、済ませたら、向かいのカフェで休憩して、そのあと映画を観に行きませんか？" → 1 (sequential activities)
+
+      Short/Simple (return "0"):
+      - "すごく、今日は、暑いね。" → 0 (single observation)
+      - "コーヒー飲む？" → 0 (simple question)
+      - "ドア閉めて。" → 0 (single instruction)
+      - "今日は暑いですね。元気ですか？" → 0 (simple inquiry)
+
+      Analyze the sentence and respond with ONLY "1" (too long/complex) or "0" (short/simple).
   
 # Output configuration
 output:

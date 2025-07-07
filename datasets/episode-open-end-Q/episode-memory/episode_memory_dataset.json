@@ -1,0 +1,362 @@
+[
+{
+    "sentence": "去年のクリスマスに家族で旅行した時のことを覚えている？",
+    "is_epsodic_memory_related": "true"
+  },
+  {
+    "sentence": "小学校の入学式の日に、校門で写真を撮った記憶が今でも残っているよ。",
+    "is_epsodic_memory_related": "true"
+  },
+  {
+    "sentence": "昨日の会議でみんなからどんな意見が出たか、覚えてる？",
+    "is_epsodic_memory_related": "true"
+  },
+  {
+    "sentence": "あのライブコンサートは最高だったね。客席の雰囲気までリアルに思い出せるよ。",
+    "is_epsodic_memory_related": "true"
+  },
+  {
+    "sentence": "暑かった夏の日に川で遊んだことを鮮明に覚えている。",
+    "is_epsodic_memory_related": "true"
+  },
+  {
+    "sentence": "初めてお好み焼きを作った日のことは今でも忘れない。",
+    "is_epsodic_memory_related": "true"
+  },
+  {
+    "sentence": "台風で学校が休校になった日の朝、ソワソワしていた自分を覚えてる。",
+    "is_epsodic_memory_related": "true"
+  },
+  {
+    "sentence": "留学先で出会った友達と語り合った夜のことを昨日のように思い出す。",
+    "is_epsodic_memory_related": "true"
+  },
+  {
+    "sentence": "入社式の日に渡された名札のデザインまで覚えているよ。",
+    "is_epsodic_memory_related": "true"
+  },
+  {
+    "sentence": "幼稚園の卒園式で泣いた自分を覚えている。",
+    "is_epsodic_memory_related": "true"
+  },
+  {
+    "sentence": "祖母と行った温泉旅行で食べた料理の味をまだ忘れられない。",
+    "is_epsodic_memory_related": "true"
+  },
+  {
+    "sentence": "高校生の時の文化祭で演劇をしたときのこと、今でも思い出せる。",
+    "is_epsodic_memory_related": "true"
+  },
+  {
+    "sentence": "子供のころ、毎年行っていた夏祭りの花火の音が耳に残っている。",
+    "is_epsodic_memory_related": "true"
+  },
+  {
+    "sentence": "遠足で食べたおにぎりの味が懐かしく思い出される。",
+    "is_epsodic_memory_related": "true"
+  },
+  {
+    "sentence": "去年の誕生日に友達からサプライズケーキをもらったときの笑顔を覚えてる。",
+    "is_epsodic_memory_related": "true"
+  },
+  {
+    "sentence": "大学の卒業式で校歌を歌った時の気持ちは今でも明確に覚えている。",
+    "is_epsodic_memory_related": "true"
+  },
+  {
+    "sentence": "夜遅くまで勉強した日の帰り道、月の光を見ていたことを覚えてる。",
+    "is_epsodic_memory_related": "true"
+  },
+  {
+    "sentence": "子どもの頃に飼っていた猫を初めて抱いた瞬間、今でもはっきり覚えている。",
+    "is_epsodic_memory_related": "true"
+  },
+  {
+    "sentence": "高校の修学旅行で撮った集合写真、みんな楽しそうだったね。",
+    "is_epsodic_memory_related": "true"
+  },
+  {
+    "sentence": "合格発表の日、掲示板に自分の番号を見つけたときの感動は忘れられない。",
+    "is_epsodic_memory_related": "true"
+  },
+  {
+    "sentence": "昨年の紅葉狩りで見た風景が目に焼き付いています。",
+    "is_epsodic_memory_related": "true"
+  },
+  {
+    "sentence": "初めて飛行機に乗った日の興奮と不安を覚えてる。",
+    "is_epsodic_memory_related": "true"
+  },
+  {
+    "sentence": "小学校の運動会でリレーに出たときの気持ちを覚えている。",
+    "is_epsodic_memory_related": "true"
+  },
+  {
+    "sentence": "中学生の頃の修学旅行でお土産に買ったマスコット人形、まだ家に飾ってるよ。",
+    "is_epsodic_memory_related": "true"
+  },
+  {
+    "sentence": "友達と見に行った映画館のシートの感触まで覚えている。",
+    "is_epsodic_memory_related": "true"
+  },
+  {
+    "sentence": "晴れた日に公園で家族とピクニックしたときの笑い声を思い出します。",
+    "is_epsodic_memory_related": "true"
+  },
+  {
+    "sentence": "引越しの前夜、最後に近所を散歩したことを今でも覚えてる。",
+    "is_epsodic_memory_related": "true"
+  },
+  {
+    "sentence": "幼い頃に転んだときに手を差し伸べてくれたおばあちゃんの温かさを思い出す。",
+    "is_epsodic_memory_related": "true"
+  },
+  {
+    "sentence": "初めて自分で作った料理が家族に好評だった日のことを覚えている。",
+    "is_epsodic_memory_related": "true"
+  },
+  {
+    "sentence": "祖父と将棋を指した夜に、優しく教えてくれた姿を今でも思い出す。",
+    "is_epsodic_memory_related": "true"
+  },
+  {
+    "sentence": "地球が太陽の周りを回る周期は約365日です。",
+    "is_epsodic_memory_related": "false"
+  },
+  {
+    "sentence": "自転車の乗り方は一度覚えれば簡単には忘れない。",
+    "is_epsodic_memory_related": "false"
+  },
+  {
+    "sentence": "Apple社はiPhoneを2010年代から販売している。",
+    "is_epsodic_memory_related": "false"
+  },
+  {
+    "sentence": "ピカソの本名はパブロ・ディエゴ・ホセ・フランシスコ・デ・パウラ・ファン・ネポムセーノ・クリスピン・クリスピアーノ・マリア・レメディオス・デ・ラ・サンティシマ・トリニダード・ルイス・イ・ピカソです。",
+    "is_epsodic_memory_related": "false"
+  },
+  {
+    "sentence": "日本語の文字にはひらがな、カタカナ、漢字の三種類がある。",
+    "is_epsodic_memory_related": "false"
+  },
+  {
+    "sentence": "パソコンの使い方は操作を繰り返せば自然に身につくものだ。",
+    "is_epsodic_memory_related": "false"
+  },
+  {
+    "sentence": "花が咲くには光合成が必要である。",
+    "is_epsodic_memory_related": "false"
+  },
+  {
+    "sentence": "バッハはバロック時代の作曲家である。",
+    "is_epsodic_memory_related": "false"
+  },
+  {
+    "sentence": "お寿司は酢飯と海産物を組み合わせて作られる。",
+    "is_epsodic_memory_related": "false"
+  },
+  {
+    "sentence": "太陽は東から昇り西に沈む。",
+    "is_epsodic_memory_related": "false"
+  },
+  {
+    "sentence": "日本の現行元号は『令和』です。",
+    "is_epsodic_memory_related": "false"
+  },
+  {
+    "sentence": "ピアノは鍵盤楽器の一種で、鍵盤を押すと音が出る。",
+    "is_epsodic_memory_related": "false"
+  },
+  {
+    "sentence": "東京は日本の首都である。",
+    "is_epsodic_memory_related": "false"
+  },
+  {
+    "sentence": "NASAはアメリカの航空宇宙局の略称である。",
+    "is_epsodic_memory_related": "false"
+  },
+  {
+    "sentence": "雨が降ると空気中の塵が落ちて視界が良くなることがある。",
+    "is_epsodic_memory_related": "false"
+  },
+  {
+    "sentence": "6月は日本で梅雨の時期にあたる。",
+    "is_epsodic_memory_related": "false"
+  },
+  {
+    "sentence": "日本の祝日には成人の日、建国記念の日、敬老の日などが含まれている。",
+    "is_epsodic_memory_related": "false"
+  },
+  {
+    "sentence": "レオナルド・ダ・ヴィンチはルネサンス期の芸術家で、『モナリザ』を描いた。",
+    "is_epsodic_memory_related": "false"
+  },
+  {
+    "sentence": "富士山は活火山で、最後の噴火は1707年に起こった。",
+    "is_epsodic_memory_related": "false"
+  },
+  {
+    "sentence": "ライト兄弟は世界で初めて動力飛行に成功した。",
+    "is_epsodic_memory_related": "false"
+  },
+  {
+    "sentence": "マラソンの距離は42.195kmと定められている。",
+    "is_epsodic_memory_related": "false"
+  },
+  {
+    "sentence": "チョコレートはカカオ豆から作られる。",
+    "is_epsodic_memory_related": "false"
+  },
+  {
+    "sentence": "ヒトの体温は平均約36.5〜37度前後である。",
+    "is_epsodic_memory_related": "false"
+  },
+  {
+    "sentence": "情報通信技術の略称はICTと呼ばれる。",
+    "is_epsodic_memory_related": "false"
+  },
+  {
+    "sentence": "インターネットは世界中のコンピュータをつなげるネットワークである。",
+    "is_epsodic_memory_related": "false"
+  },
+  {
+    "sentence": "数学では円周率をπで表し、その値は3.14159...と続く。",
+    "is_epsodic_memory_related": "false"
+  },
+  {
+    "sentence": "スペイン語で『ありがとう』は『gracias』という。",
+    "is_epsodic_memory_related": "false"
+  },
+  {
+    "sentence": "茶道では『一期一会』という考え方が大切にされる。",
+    "is_epsodic_memory_related": "false"
+  },
+  {
+    "sentence": "甲子園は日本の高校野球の全国大会の会場である。",
+    "is_epsodic_memory_related": "false"
+  },
+  {
+    "sentence": "A地点からB地点に向かうのに、最短距離は直線である。",
+    "is_epsodic_memory_related": "false"
+  },
+  {
+    "sentence": "今日は雨が降るかもしれないね。",
+    "is_epsodic_memory_related": "neutral"
+  },
+  {
+    "sentence": "最近、新しいカフェがオープンしたらしいよ。",
+    "is_epsodic_memory_related": "neutral"
+  },
+  {
+    "sentence": "明日の朝は早起きしなきゃ。",
+    "is_epsodic_memory_related": "neutral"
+  },
+  {
+    "sentence": "これから何をしようかと思っている。",
+    "is_epsodic_memory_related": "neutral"
+  },
+  {
+    "sentence": "あの映画、ずっと前から見たかったんだ。",
+    "is_epsodic_memory_related": "neutral"
+  },
+  {
+    "sentence": "友達と一緒に旅行したい気分だ。",
+    "is_epsodic_memory_related": "neutral"
+  },
+  {
+    "sentence": "週末は家でゆっくり過ごす予定だよ。",
+    "is_epsodic_memory_related": "neutral"
+  },
+  {
+    "sentence": "買い物のついでに郵便局にも寄ってきてくれる？",
+    "is_epsodic_memory_related": "neutral"
+  },
+  {
+    "sentence": "お腹空いたから、軽いおやつでも食べようか。",
+    "is_epsodic_memory_related": "neutral"
+  },
+  {
+    "sentence": "この道はいつも渋滞するので注意したほうがいいよ。",
+    "is_epsodic_memory_related": "neutral"
+  },
+  {
+    "sentence": "今晩のおかずは何がいいかな？",
+    "is_epsodic_memory_related": "neutral"
+  },
+  {
+    "sentence": "彼女は優しくて、いつも周りに気を遣ってくれる。",
+    "is_epsodic_memory_related": "neutral"
+  },
+  {
+    "sentence": "今日は月がとても綺麗だ。",
+    "is_epsodic_memory_related": "neutral"
+  },
+  {
+    "sentence": "授業は午前中で終わるから、昼過ぎから出掛けよう。",
+    "is_epsodic_memory_related": "neutral"
+  },
+  {
+    "sentence": "この曲、最近よくラジオで流れているね。",
+    "is_epsodic_memory_related": "neutral"
+  },
+  {
+    "sentence": "明日は友達とショッピングに行く予定だ。",
+    "is_epsodic_memory_related": "neutral"
+  },
+  {
+    "sentence": "コンビニでお菓子と飲み物を買ってきてほしい。",
+    "is_epsodic_memory_related": "neutral"
+  },
+  {
+    "sentence": "このアプリ、使い方が簡単で便利だよ。",
+    "is_epsodic_memory_related": "neutral"
+  },
+  {
+    "sentence": "公園でちょっと散歩してくる。",
+    "is_epsodic_memory_related": "neutral"
+  },
+  {
+    "sentence": "電車はあと5分で到着するよ。",
+    "is_epsodic_memory_related": "neutral"
+  },
+  {
+    "sentence": "面白い本を見つけたから、後で貸してあげるね。",
+    "is_epsodic_memory_related": "neutral"
+  },
+  {
+    "sentence": "彼はいつも時間に正確だ。",
+    "is_epsodic_memory_related": "neutral"
+  },
+  {
+    "sentence": "映画館の前で待ち合わせしようか。",
+    "is_epsodic_memory_related": "neutral"
+  },
+  {
+    "sentence": "ガソリンの値段が最近上がっているね。",
+    "is_epsodic_memory_related": "neutral"
+  },
+  {
+    "sentence": "お母さんが作ったカレーは本当に美味しい。",
+    "is_epsodic_memory_related": "neutral"
+  },
+  {
+    "sentence": "今日は早く寝るつもりです。",
+    "is_epsodic_memory_related": "neutral"
+  },
+  {
+    "sentence": "ペットショップで子犬が可愛くてつい見入っちゃった。",
+    "is_epsodic_memory_related": "neutral"
+  },
+  {
+    "sentence": "図書館で勉強してから帰宅するよ。",
+    "is_epsodic_memory_related": "neutral"
+  },
+  {
+    "sentence": "最近、日本語の勉強を毎日続けている。",
+    "is_epsodic_memory_related": "neutral"
+  },
+  {
+    "sentence": "週末の予定はまだ何も決めていないんだ。",
+    "is_epsodic_memory_related": "neutral"
+  }
+]

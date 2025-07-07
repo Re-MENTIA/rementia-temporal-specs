@@ -97,4 +97,8 @@ class OpenAIClient:
             return response.json()['choices'][0]['message']['content'].strip()
         except Exception as e:
             print(f"API Error: {e}")
-            return "0"
+            print(f"Request model: {data.get('model')}")
+            print(f"Response status: {response.status_code if 'response' in locals() else 'No response'}")
+            if 'response' in locals() and hasattr(response, 'text'):
+                print(f"Response text: {response.text[:200]}")
+            raise e

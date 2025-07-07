@@ -40,3 +40,8 @@ checkpoint.json
 htmlcov/
 .tox/
 .nox/
+.history
+.claude
+.env
+
+*/*.log
