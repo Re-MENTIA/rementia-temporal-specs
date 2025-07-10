@@ -1,20 +1,113 @@
-# Configuration for Accommodation Speech Detection System
+# ================================================
+# Eldercare Detection System - Master Configuration
+# ================================================
+# This configuration file serves as the single source of truth for the entire system.
+# All components should reference this configuration to eliminate hardcoding.
 
-# Dataset configuration
+# ================================================
+# System Configuration
+# ================================================
+system:
+  name: "Eldercare Communication Analysis System"
+  version: "2.0.0"
+  description: "Modular detection system for analyzing eldercare communication patterns"
+  environment: "production"  # development, testing, production
+  
+# ================================================
+# Dataset Configuration
+# ================================================
 dataset:
   base_path: "datasets"
   encoding: "utf-8"
+  cache_enabled: true
+  cache_dir: ".cache/datasets"
   
-# Task-specific configurations
+# ================================================
+# Detector Registry
+# ================================================
+# All detectors are registered here with their configurations
+detectors:
+  # Terms of Endearment Detector
+  terms_of_endearment:
+    enabled: true
+    class_name: "TermsOfEndearmentDetector"
+    module: "src.detectors.terms_of_endearment"
+    type_key: "ToE"
+    task_category: "elderspeak"
+    description: "Detects infantilizing terms of endearment in eldercare communication"
+    
+  # Collective Instruction Detector  
+  collective_instruction:
+    enabled: true
+    class_name: "CollectiveInstructionDetector"
+    module: "src.detectors.collective_instruction"
+    type_key: "collective"
+    task_category: "elderspeak"
+    description: "Detects inappropriate use of collective pronouns in instructions"
+    
+  # Episode Memory Detector
+  episode_memory:
+    enabled: true
+    class_name: "EpisodeMemoryDetector"
+    module: "src.detectors.episode_memory"
+    type_key: "episode_memory"
+    task_category: "episode_detection"
+    description: "Detects references to episodic memory in conversations"
+    
+  # Open-End Question Detector
+  open_end_question:
+    enabled: true
+    class_name: "OpenEndQuestionDetector"
+    module: "src.detectors.open_end_question"
+    type_key: "open_end"
+    task_category: "question_detection"
+    description: "Classifies questions as open-ended or closed-ended"
+    
+  # Long Speech Detector
+  long_speech:
+    enabled: true
+    class_name: "LongSpeechDetector"
+    module: "src.detectors.long_speech"
+    type_key: "long_speech"
+    task_category: "long_speech_detection"
+    description: "Detects overly long or complex speech patterns"
+    
+  # Use Pronoun Detector (New)
+  use_pronoun:
+    enabled: true
+    class_name: "UsePronounDetector"
+    module: "src.detectors.use_pronoun"
+    type_key: "use_pronoun"
+    task_category: "pronoun_detection"
+    description: "Detects vague pronoun usage that may confuse elderly individuals"
+
+# ================================================
+# Task-Specific Dataset Configurations
+# ================================================
 tasks:
-  accommodation_speech:
+  # Elderspeak Detection Tasks
+  elderspeak:
     base_path: "datasets/Elderspeak"
     types:
       ToE:
         name: "Terms of Endearment"
         path: "ToE/terms_of_endearment_dataset_refined_v2.json"
         labels: ["0", "1"]  # 0=safe, 1=harmful
+        label_field: "label"
+        input_field: "text"
+        
+      collective:
+        name: "Collective Instruction"
+        path: "collective/collective_instruction_dataset.json"
+        labels: ["0", "1"]  # 0=safe (non-collective/neutral), 1=harmful (collective)
+        label_field: "instruction_type"
+        input_field: "sentence"
+        label_mapping:
+          "non-collective": "0"
+          "neutral": "0"
+          "collective": "1"
   
+  # Episode Detection Tasks
   episode_detection:
     base_path: "datasets/episode-open-end-Q"
     types:
@@ -22,18 +115,18 @@ tasks:
         name: "Episode Memory Detection"
         path: "episode-memory/episode_memory_dataset.json"
         labels: ["0", "1"]  # 0=not episodic, 1=episodic
-        label_field: "is_epsodic_memory_related"  # Different field name (typo in original dataset)
-        input_field: "sentence"  # Different input field name
-        label_mapping:  # Convert from dataset labels to binary
+        label_field: "is_epsodic_memory_related"  # Note: typo in original dataset
+        input_field: "sentence"
+        label_mapping:
           "true": "1"
           "false": "0"
           "neutral": "0"
   
+  # Question Detection Tasks
   question_detection:
     base_path: "datasets/episode-open-end-Q"
     types:
       open_end:
-      
         name: "Open-End Question Detection"
         path: "open-end-Q/open_end_Q_dataset.json"
         labels: ["0", "1"]  # 0=closed-ended, 1=open-ended
@@ -44,6 +137,7 @@ tasks:
           "closed-ended": "0"
           "neutral": "0"  # Non-questions
   
+  # Long Speech Detection Tasks
   long_speech_detection:
     base_path: "datasets/long-speech"
     types:
@@ -56,39 +150,167 @@ tasks:
         label_mapping:
           "False": "0"
           "True": "1"
+          
+  # Pronoun Detection Tasks (New)
+  pronoun_detection:
+    base_path: "datasets/usePronoun"
+    types:
+      use_pronoun:
+        name: "Vague Pronoun Detection"
+        path: "use_pronoun_dataset.json"
+        labels: ["0", "1"]  # 0=clear reference, 1=vague/confusing
+        label_field: "label"
+        input_field: "sentence"
 
-# Model configuration
+# ================================================
+# Model Configuration
+# ================================================
 models:
-  default: "gpt-4.1-mini"
-  available: ["gpt-4.1-mini", "o4-mini-2025-04-16"]
-  temperature: 0
-  max_tokens: 2
+  # Default model for all detectors
+  default: "gpt-4o-mini"
   
-# API configuration  
+  # Available models with their configurations
+  available:
+    gpt-4o-mini:
+      provider: "openai"
+      max_tokens: 2
+      temperature: 0
+      timeout: 30
+      cost_per_1k_tokens: 0.00015
+      
+    gpt-4o:
+      provider: "openai"
+      max_tokens: 2
+      temperature: 0
+      timeout: 30
+      cost_per_1k_tokens: 0.0025
+      
+    gpt-4:
+      provider: "openai"
+      max_tokens: 2
+      temperature: 0
+      timeout: 30
+      cost_per_1k_tokens: 0.03
+      
+  # Model-specific overrides for detectors
+  detector_overrides:
+    episode_memory: "gpt-4o-mini"
+    long_speech: "gpt-4o-mini"
+    
+# ================================================
+# API Configuration
+# ================================================
 api:
-  base_url: "https://api.openai.com/v1/chat/completions"
-  rate_limit_delay: 0.5  # seconds between requests
-  timeout: 30  # seconds
-  max_retries: 3
+  openai:
+    base_url: "https://api.openai.com/v1/chat/completions"
+    rate_limit_delay: 0.1  # seconds between requests
+    timeout: 30  # seconds
+    max_retries: 3
+    retry_delay: 1.0  # seconds
+    
+  # Additional API providers can be added here
+  anthropic:
+    base_url: "https://api.anthropic.com/v1/messages"
+    rate_limit_delay: 0.2
+    timeout: 30
+    max_retries: 3
 
-# Cross-validation configuration
+# ================================================
+# Cross-Validation Configuration
+# ================================================
 cross_validation:
-  n_folds: 3
-  n_repeats: 3
+  # Standard cross-validation settings
+  standard:
+    n_folds: 3
+    n_repeats: 3
+    stratified: true
+    random_seed_base: 42
+    
+  # Fast evaluation settings (for development)
+  fast:
+    n_folds: 2
+    n_repeats: 1
+    stratified: true
+    random_seed_base: 42
+    
+  # Validation split for prompt optimization
   validation_split_ratio: 0.2
-  random_seed_base: 42
-  stratified: true
-
-# Prompt optimization configuration
-prompt_optimization:
-  enabled: true
-  validation_samples: 10
-  accuracy_threshold: 0.95
-  recall_threshold: 0.8
-  precision_threshold: 0.9
   
-# Prompts for different accommodation types
+  # Parallel processing
+  parallel:
+    enabled: true
+    max_workers: 4
+    batch_size: 10
+
+# ================================================
+# TextGrad Optimization Configuration
+# ================================================
+textgrad_optimization:
+  enabled: true
+  
+  # Optimization engine settings
+  engine:
+    provider: "openai"
+    model: "gpt-4o"
+    temperature: 0.7
+    max_tokens: 1000
+    
+  # Optimization parameters
+  parameters:
+    max_iterations: 5
+    learning_rate: 0.1
+    convergence_threshold: 0.01
+    early_stopping_patience: 2
+    
+  # Validation settings
+  validation:
+    samples_per_iteration: 20
+    min_samples: 10
+    stratified: true
+    
+  # Performance thresholds
+  thresholds:
+    accuracy: 0.95
+    recall: 0.80
+    precision: 0.90
+    f1_score: 0.85
+    
+  # Optimization strategies per detector
+  detector_strategies:
+    terms_of_endearment:
+      focus_metric: "recall"
+      max_iterations: 3
+      
+    collective_instruction:
+      focus_metric: "precision"
+      max_iterations: 5
+      
+    episode_memory:
+      focus_metric: "f1_score"
+      max_iterations: 4
+      
+    use_pronoun:
+      focus_metric: "accuracy"
+      max_iterations: 3
+
+# ================================================
+# Prompt Templates
+# ================================================
 prompts:
+  # Base template for all detectors
+  base_template: |
+    You are an expert in analyzing eldercare communication patterns.
+    Your task is to detect specific patterns that may be inappropriate or harmful.
+    
+    {task_description}
+    
+    {guidelines}
+    
+    {examples}
+    
+    Analyze the text and respond with ONLY "{positive_label}" or "{negative_label}".
+    
+  # Detector-specific prompts
   ToE:
     initial: |
       You are an expert in analyzing eldercare communication for inappropriate terms of endearment.
@@ -110,6 +332,44 @@ prompts:
       - "お疲れ様でした" → 0 (professional)
 
       Analyze the text and respond with ONLY "1" (harmful) or "0" (safe).
+  
+  collective:
+    initial: |
+      You are an expert in analyzing eldercare communication for collective instruction patterns.
+
+      COLLECTIVE INSTRUCTION: The inappropriate use of inclusive first-person plural pronouns ("we", "us", "our", "let's", "私たち", "一緒に") when giving instructions where the speaker is not necessary for the action but uses collective language to manipulate or soften commands. This includes using phrases like "私のために" (for my sake) or "私も心配だから" (because I'm worried too) to make the care recipient feel obligated to comply.
+
+      Key features of collective instruction:
+      - Uses "we/us/our/let's" or "私たち/一緒に" when speaker won't actually participate
+      - Uses emotional manipulation like "私のために" or "私も" to create false solidarity
+      - The action could/should be done independently by the care recipient
+      - Masks individual directives as shared activities
+      - Undermines autonomy by implying dependency
+
+      NON-COLLECTIVE: Direct instructions using appropriate pronouns
+      - Uses "you" or polite forms ("あなた", "〜てください")
+      - Clear about who performs the action
+      - Respects individual autonomy
+
+      NEUTRAL: Non-instructional text
+      - Descriptions, observations, or general statements
+      - No commands or directives present
+
+      Examples:
+      Collective:
+      - "私たちで今夜の献立を決めましょうか" → collective (speaker won't actually decide together)
+      - "Let's take our medicine now" → collective (only patient takes medicine)
+      - "一緒に深呼吸をしてみましょう" → collective (masking instruction)
+      
+      Non-collective:
+      - "お薬を飲んでください" → non-collective (direct, respectful)
+      - "Please close the window" → non-collective (clear instruction)
+      
+      Neutral:
+      - "今日は良い天気です" → neutral (observation)
+      - "The flowers are blooming" → neutral (description)
+
+      Analyze the text and respond with ONLY "1" (collective instruction detected) or "0" (safe - non-collective or neutral).
   
   episode_memory:
     initial: |
@@ -228,17 +488,211 @@ prompts:
       - "今日は暑いですね。元気ですか？" → 0 (simple inquiry)
 
       Analyze the sentence and respond with ONLY "1" (too long/complex) or "0" (short/simple).
-  
-# Output configuration
+      
+  use_pronoun:
+    initial: |
+      You are an expert in analyzing eldercare communication for vague pronoun usage.
+
+      VAGUE PRONOUN USAGE: The use of demonstrative pronouns (this, that, these, those, it, here, there, これ、それ、あれ、ここ、そこ、あそこ) without clear antecedents or in contexts where elderly individuals with cognitive impairments might struggle to understand the reference.
+
+      Key features of vague pronoun usage:
+      - Uses "it", "this", "that", "there" without clear reference
+      - Uses Japanese demonstratives (これ、それ、あれ) unclearly
+      - Assumes shared context that may not exist
+      - Creates ambiguity about what is being referenced
+      - May cause confusion for those with memory issues
+
+      CLEAR COMMUNICATION: Direct references using specific nouns
+      - Names specific objects, places, or actions
+      - Provides clear context
+      - Avoids ambiguous references
+      - Supports cognitive clarity
+
+      Examples:
+      Vague (return "1"):
+      - "さあ、これを全部飲みましょうね。" → 1 (unclear what "これ" refers to)
+      - "Take that over there, please." → 1 (unclear "that" and "there")
+      - "そこに座ってお待ちください。" → 1 (unclear where "そこ" is)
+      
+      Clear (return "0"):
+      - "お薬を全部飲みましょうね。" → 0 (specific reference)
+      - "Take the blue cup on the table, please." → 0 (clear references)
+      - "椅子に座ってお待ちください。" → 0 (specific location)
+
+      Analyze the text and respond with ONLY "1" (vague pronoun usage) or "0" (clear communication).
+
+# ================================================
+# Output Configuration
+# ================================================
 output:
+  # Results directory structure
   results_dir: "results"
-  checkpoint_enabled: true
-  checkpoint_file: "checkpoint.json"
-  save_predictions: true
-  max_predictions_to_save: 20
-  
-# Logging configuration
+  subdirectories:
+    raw_results: "raw"
+    processed_results: "processed"
+    visualizations: "visualizations"
+    reports: "reports"
+    
+  # Checkpoint configuration
+  checkpoint:
+    enabled: true
+    directory: "checkpoints"
+    auto_resume: true
+    save_frequency: 100  # Save every N evaluations
+    
+  # Prediction saving
+  predictions:
+    save_all: false
+    save_errors: true
+    max_to_save: 50
+    include_confidence: true
+    
+  # Report generation
+  reports:
+    formats: ["json", "csv", "markdown", "html"]
+    include_visualizations: true
+    include_confusion_matrix: true
+    include_per_fold_results: true
+
+# ================================================
+# Logging Configuration
+# ================================================
 logging:
-  level: "INFO"
+  # General logging settings
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
   format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-  file: "evaluation.log"
+  date_format: "%Y-%m-%d %H:%M:%S"
+  
+  # File logging
+  file:
+    enabled: true
+    path: "logs/eldercare_detection.log"
+    max_size_mb: 10
+    backup_count: 5
+    
+  # Console logging
+  console:
+    enabled: true
+    colored: true
+    
+  # Component-specific logging levels
+  component_levels:
+    data_loader: "INFO"
+    detector: "INFO"
+    optimizer: "DEBUG"
+    evaluator: "INFO"
+    api_client: "WARNING"
+
+# ================================================
+# Streamlit UI Configuration
+# ================================================
+streamlit:
+  # Page configuration
+  page:
+    title: "Eldercare Communication Analyzer"
+    icon: "🏥"
+    layout: "wide"
+    initial_sidebar_state: "expanded"
+    
+  # UI components
+  components:
+    show_raw_results: true
+    show_confidence_scores: true
+    show_detection_explanations: false
+    enable_batch_analysis: true
+    enable_real_time_analysis: true
+    
+  # Visualization settings
+  visualizations:
+    color_scheme:
+      harmful: "#ff4444"
+      safe: "#44ff44"
+      neutral: "#ffaa44"
+    chart_height: 400
+    show_statistics: true
+    
+  # Performance settings
+  cache:
+    enabled: true
+    ttl_seconds: 3600
+    max_entries: 1000
+
+# ================================================
+# Data Loader Configuration
+# ================================================
+data_loader:
+  # Abstraction layer settings
+  abstract_interface:
+    enforce_schema: true
+    validate_labels: true
+    auto_normalize: true
+    
+  # Schema definitions
+  schemas:
+    default:
+      text_field: "text"
+      label_field: "label"
+      metadata_fields: ["id", "source", "timestamp"]
+      
+  # Preprocessing
+  preprocessing:
+    lowercase: false
+    strip_whitespace: true
+    remove_empty: true
+    max_length: 1000
+    
+  # Augmentation options
+  augmentation:
+    enabled: false
+    strategies: ["paraphrase", "translation_back"]
+    augmentation_factor: 2
+
+# ================================================
+# Evaluation Metrics Configuration
+# ================================================
+metrics:
+  # Primary metrics
+  primary: ["accuracy", "f1_score", "recall", "precision"]
+  
+  # Additional metrics
+  additional: ["specificity", "balanced_accuracy", "mcc", "auc_roc"]
+  
+  # Confidence intervals
+  confidence_intervals:
+    enabled: true
+    confidence_level: 0.95
+    method: "bootstrap"
+    n_bootstrap: 1000
+    
+  # Per-class metrics
+  per_class:
+    enabled: true
+    average: "weighted"  # micro, macro, weighted
+
+# ================================================
+# Advanced Configuration
+# ================================================
+advanced:
+  # Memory management
+  memory:
+    batch_processing: true
+    batch_size: 100
+    gc_frequency: 1000
+    
+  # Error handling
+  error_handling:
+    continue_on_error: true
+    max_retries: 3
+    retry_backoff: "exponential"
+    
+  # Performance optimization
+  optimization:
+    use_caching: true
+    parallel_processing: true
+    vectorized_operations: true
+    
+  # Debugging
+  debugging:
+    save_intermediate_results: false
+    profile_performance: false
+    trace_api_calls: false

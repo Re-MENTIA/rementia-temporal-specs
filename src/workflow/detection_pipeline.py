@@ -9,10 +9,12 @@ from typing import Dict, List, Optional, Any
 from pathlib import Path
 
 from ..detectors import (
-    AccommodationSpeechDetector,
+    TermsOfEndearmentDetector,
+    CollectiveInstructionDetector,
     EpisodeMemoryDetector, 
     OpenEndQuestionDetector,
-    LongSpeechDetector
+    LongSpeechDetector,
+    UsePronounDetector
 )
 
 
@@ -34,10 +36,12 @@ class DetectionPipeline:
         
         # Initialize detectors
         self.detectors = {
-            'accommodation': AccommodationSpeechDetector(),
+            'terms_of_endearment': TermsOfEndearmentDetector(),
+            'collective_instruction': CollectiveInstructionDetector(),
             'episode_memory': EpisodeMemoryDetector(),
             'open_end_question': OpenEndQuestionDetector(),
-            'long_speech': LongSpeechDetector()
+            'long_speech': LongSpeechDetector(),
+            'use_pronoun': UsePronounDetector()
         }
         
         # Load optimized prompts if available
@@ -109,7 +113,7 @@ class DetectionPipeline:
     def _get_label_meaning(self, detector_name: str, prediction: str) -> str:
         """Get human-readable meaning of prediction"""
         meanings = {
-            'accommodation': {
+            'terms_of_endearment': {
                 '0': 'Safe language',
                 '1': 'Inappropriate terms of endearment'
             },
@@ -124,6 +128,14 @@ class DetectionPipeline:
             'long_speech': {
                 '0': 'Short and simple',
                 '1': 'Too long or complex'
+            },
+            'collective_instruction': {
+                '0': 'Safe language (direct/neutral)',
+                '1': 'Uses inappropriate "we/us" forms'
+            },
+            'use_pronoun': {
+                '0': 'Clear references',
+                '1': 'Vague pronoun usage'
             }
         }
         
@@ -132,21 +144,25 @@ class DetectionPipeline:
     def _assess_risk_level(self, detections: Dict[str, Dict]) -> str:
         """Assess overall risk level based on detections"""
         # Extract predictions
-        accommodation = detections.get('accommodation', {}).get('prediction', '0')
+        terms_of_endearment = detections.get('terms_of_endearment', {}).get('prediction', '0')
+        collective = detections.get('collective_instruction', {}).get('prediction', '0')
         episode = detections.get('episode_memory', {}).get('prediction', '0')
         open_end = detections.get('open_end_question', {}).get('prediction', '0')
         long_speech = detections.get('long_speech', {}).get('prediction', '0')
+        use_pronoun = detections.get('use_pronoun', {}).get('prediction', '0')
         
         # Count risk factors
         risk_factors = sum([
-            accommodation == '1',
+            terms_of_endearment == '1',
+            collective == '1',
             episode == '1',
             open_end == '1',
-            long_speech == '1'
+            long_speech == '1',
+            use_pronoun == '1'
         ])
         
-        # High risk: Multiple risk factors OR critical issues
-        if risk_factors >= 2 or accommodation == '1' or (episode == '1' and open_end == '1'):
+        # High risk: Multiple risk factors OR critical elderspeak issues
+        if risk_factors >= 2 or terms_of_endearment == '1' or collective == '1' or (episode == '1' and open_end == '1'):
             return 'high'
             
         # Medium risk: Single risk factor
@@ -163,9 +179,15 @@ class DetectionPipeline:
         recommendations = []
         
         # Check each detection
-        if detections.get('accommodation', {}).get('prediction') == '1':
+        if detections.get('terms_of_endearment', {}).get('prediction') == '1':
             recommendations.append(
                 "Avoid using terms of endearment. Use respectful titles or the person's name."
+            )
+            
+        if detections.get('collective_instruction', {}).get('prediction') == '1':
+            recommendations.append(
+                "Avoid using 'we/us' when giving instructions. Use direct, respectful language "
+                "that acknowledges individual autonomy (e.g., 'Would you like to...' instead of 'Let's...')."
             )
             
         if detections.get('episode_memory', {}).get('prediction') == '1':
@@ -184,6 +206,12 @@ class DetectionPipeline:
             recommendations.append(
                 "This sentence is too long or complex. Break it into shorter, simpler sentences "
                 "with one idea each for better comprehension."
+            )
+            
+        if detections.get('use_pronoun', {}).get('prediction') == '1':
+            recommendations.append(
+                "Avoid vague pronouns like 'this', 'that', 'it'. Use specific nouns instead "
+                "to make references clear for individuals with memory issues."
             )
             
         # Add risk-based recommendation

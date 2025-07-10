@@ -91,7 +91,7 @@ class OpenAIClient:
                 "https://api.openai.com/v1/chat/completions",
                 headers=headers,
                 json=data,
-                timeout=30
+                timeout=120  # 2分に延長
             )
             response.raise_for_status()
             return response.json()['choices'][0]['message']['content'].strip()
@@ -101,4 +101,63 @@ class OpenAIClient:
             print(f"Response status: {response.status_code if 'response' in locals() else 'No response'}")
             if 'response' in locals() and hasattr(response, 'text'):
                 print(f"Response text: {response.text[:200]}")
+            raise e
+    
+    def generate(self, text: str, system_prompt: str, model: str = "gpt-4o-mini", max_tokens: int = 4000) -> str:
+        """
+        Generate longer text response from OpenAI
+        
+        Args:
+            text: Input text/prompt
+            system_prompt: System prompt
+            model: Model to use
+            max_tokens: Maximum tokens to generate
+            
+        Returns:
+            Generated text
+        """
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": text}
+        ]
+        
+        if self.use_package and self.client:
+            # Use OpenAI package
+            try:
+                response = self.client.chat.completions.create(
+                    model=model,
+                    messages=messages,
+                    temperature=0.7,
+                    max_tokens=max_tokens
+                )
+                return response.choices[0].message.content.strip()
+            except Exception as e:
+                print(f"OpenAI package error: {e}, falling back to requests")
+                self.use_package = False
+        
+        # Fallback to requests
+        import requests
+        headers = {
+            "Authorization": f"Bearer {self.api_key}",
+            "Content-Type": "application/json"
+        }
+        
+        data = {
+            "model": model,
+            "messages": messages,
+            "temperature": 0.7,
+            "max_tokens": max_tokens
+        }
+        
+        try:
+            response = requests.post(
+                "https://api.openai.com/v1/chat/completions",
+                headers=headers,
+                json=data,
+                timeout=120  # 2分に延長
+            )
+            response.raise_for_status()
+            return response.json()['choices'][0]['message']['content'].strip()
+        except Exception as e:
+            print(f"API Error: {e}")
             raise e

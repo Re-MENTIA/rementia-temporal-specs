@@ -110,8 +110,10 @@ def main():
         
         try:
             # Load dataset
-            if name == 'accommodation':
-                dataset = data_loader.load_accommodation_speech_data()
+            if name == 'terms_of_endearment':
+                dataset = data_loader.load_terms_of_endearment_data()
+            elif name == 'collective_instruction':
+                dataset = data_loader.load_collective_instruction_data()
             elif name == 'episode_memory':
                 dataset = data_loader.load_episode_memory_data()
             elif name == 'open_end_question':

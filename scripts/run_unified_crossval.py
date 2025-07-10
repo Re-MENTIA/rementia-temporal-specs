@@ -22,14 +22,14 @@ sys.path.append(str(Path(__file__).parent.parent))
 
 from src.models.openai_client import OpenAIClient
 from src.utils.metrics import calculate_metrics
-from src.utils.unified_reporting import UnifiedReportGenerator
+# from src.utils.unified_reporting import UnifiedReportGenerator  # Temporarily disabled due to matplotlib
 
 
 class UnifiedCrossValidator:
     """Unified cross-validation evaluator for multiple detection tasks"""
     
     def __init__(self, config_path: str = "config/config.yaml", 
-                 task: str = "accommodation_speech", 
+                 task: str = "elderspeak", 
                  task_type: str = "ToE"):
         """Initialize with configuration"""
         self.config = self._load_config(config_path)
@@ -47,6 +47,16 @@ class UnifiedCrossValidator:
         """Setup logging configuration"""
         log_config = self.config.get('logging', {})
         log_file = f"{self.task}_{self.task_type}_crossval.log"
+        
+        # Ensure log file can be created
+        try:
+            # Create log file if it doesn't exist
+            with open(log_file, 'a'):
+                pass
+        except:
+            # If we can't create in current dir, use temp dir
+            import tempfile
+            log_file = os.path.join(tempfile.gettempdir(), log_file)
         
         logging.basicConfig(
             level=getattr(logging, log_config.get('level', 'INFO')),
@@ -152,40 +162,139 @@ class UnifiedCrossValidator:
             if is_correct:
                 correct += 1
             
-            time.sleep(self.config['api']['rate_limit_delay'])
+            time.sleep(self.config.get('api', {}).get('openai', {}).get('rate_limit_delay', 0.1))
         
         accuracy = correct / len(dataset) if dataset else 0
         return accuracy, predictions
     
     def optimize_prompt(self, train_data: List[Dict], val_data: List[Dict], 
                        initial_prompt: str) -> Tuple[str, float]:
-        """Simple prompt optimization based on validation performance"""
-        self.logger.info(f"Optimizing prompt on {len(val_data)} validation samples")
+        """REAL gradient-based prompt optimization"""
+        self.logger.info(f"Starting REAL TextGrad optimization on {len(val_data)} validation samples")
         
         # Evaluate with initial prompt
-        accuracy, predictions = self.evaluate_dataset(val_data, initial_prompt, show_progress=False)
-        self.logger.info(f"Initial validation accuracy: {accuracy:.2%}")
+        initial_accuracy, initial_predictions = self.evaluate_dataset(val_data, initial_prompt, show_progress=False)
+        self.logger.info(f"Initial validation accuracy: {initial_accuracy:.2%}")
         
-        # Calculate metrics
-        metrics = calculate_metrics(predictions)
+        # Calculate initial metrics
+        initial_metrics = calculate_metrics(initial_predictions)
         
         # Check if optimization is needed
-        opt_config = self.config['prompt_optimization']
-        if (accuracy >= opt_config['accuracy_threshold'] and
-            metrics.get('recall_harmful', metrics.get('recall_1', 1.0)) >= opt_config['recall_threshold'] and
-            metrics.get('precision_harmful', metrics.get('precision_1', 1.0)) >= opt_config['precision_threshold']):
+        opt_thresholds = self.config.get('textgrad_optimization', {}).get('thresholds', {})
+        accuracy_threshold = opt_thresholds.get('accuracy', 0.95)
+        recall_threshold = opt_thresholds.get('recall', 0.80)
+        precision_threshold = opt_thresholds.get('precision', 0.90)
+        
+        if (initial_accuracy >= accuracy_threshold and
+            initial_metrics.get('recall_harmful', initial_metrics.get('recall_1', 1.0)) >= recall_threshold and
+            initial_metrics.get('precision_harmful', initial_metrics.get('precision_1', 1.0)) >= precision_threshold):
             self.logger.info("Initial prompt meets all thresholds, no optimization needed")
-            return initial_prompt, accuracy
+            return initial_prompt, initial_accuracy
         
         # Create improved prompt based on errors
-        errors = [p for p in predictions if not p['correct']]
-        if errors:
-            task_name = self.config['tasks'][self.task]['types'][self.task_type].get('name', self.task)
-            self.logger.info(f"Prompt optimization disabled for {task_name} (prompt too long)")
-            # Return the initial prompt without modification
-            return initial_prompt, accuracy
+        errors = [p for p in initial_predictions if not p['correct']]
+        if not errors:
+            self.logger.info("No errors found, returning initial prompt")
+            return initial_prompt, initial_accuracy
         
-        return initial_prompt, accuracy
+        # Check prompt length
+        prompt_tokens_estimate = len(initial_prompt) / 4
+        if prompt_tokens_estimate > 2500:  # Leave room for gradient generation
+            self.logger.info(f"Prompt too long for optimization (~{int(prompt_tokens_estimate)} tokens)")
+            return initial_prompt, initial_accuracy
+        
+        self.logger.info(f"Found {len(errors)} errors, performing gradient-based optimization...")
+        
+        # Implement REAL gradient-based optimization
+        current_prompt = initial_prompt
+        best_prompt = initial_prompt
+        best_accuracy = initial_accuracy
+        
+        # Optimization loop - 3 iterations
+        for iteration in range(3):
+            self.logger.info(f"\n--- Optimization Iteration {iteration + 1}/3 ---")
+            
+            # Sample errors for gradient computation (max 10)
+            error_sample = errors[:10] if len(errors) > 10 else errors
+            
+            # Generate gradient feedback using GPT-4
+            gradient_prompt = f"""You are an expert prompt engineer optimizing a classification prompt.
+
+Current prompt:
+{current_prompt}
+
+The prompt had {len(errors)} errors out of {len(val_data)} validation samples (accuracy: {initial_accuracy:.2%}).
+
+Here are examples of misclassifications:
+"""
+            for i, err in enumerate(error_sample[:5]):
+                gradient_prompt += f"\n{i+1}. Input: \"{err['input']}\"\n   Expected: {err['true']}, Got: {err['pred']}\n"
+            
+            gradient_prompt += f"""
+Analyze why these errors occurred and provide specific improvements to the prompt.
+Focus on:
+1. Clarifying ambiguous criteria
+2. Adding missing edge cases
+3. Improving examples if present
+4. Making decision boundaries clearer
+
+Provide the COMPLETE improved prompt that addresses these issues.
+The improved prompt should maintain the same structure and end with the same instruction format."""
+            
+            # Get gradient (improvement suggestions)
+            gradient_response = self.client.generate(
+                text=gradient_prompt,
+                system_prompt="You are an expert at improving classification prompts based on error analysis.",
+                model="gpt-4o-mini",
+                max_tokens=4000
+            )
+            
+            # Extract improved prompt
+            improved_prompt = gradient_response.strip()
+            
+            # Validate improved prompt
+            if len(improved_prompt) < 100:
+                self.logger.warning(f"Invalid gradient response (too short: {len(improved_prompt)} chars), keeping current prompt")
+                continue
+            
+            # Check if it contains instruction format (more flexible)
+            if not any(keyword in improved_prompt.lower() for keyword in ["analyze", "respond with", "classify", "detect"]):
+                self.logger.warning("Invalid gradient response (no instruction found), keeping current prompt")
+                self.logger.debug(f"Response preview: {improved_prompt[:200]}...")
+                continue
+            
+            # Evaluate improved prompt
+            new_accuracy, new_predictions = self.evaluate_dataset(val_data, improved_prompt, show_progress=False)
+            self.logger.info(f"Iteration {iteration + 1} accuracy: {new_accuracy:.2%} (Δ = {(new_accuracy - initial_accuracy)*100:+.2f}%)")
+            
+            # Update best prompt if improved
+            if new_accuracy > best_accuracy:
+                best_prompt = improved_prompt
+                best_accuracy = new_accuracy
+                errors = [p for p in new_predictions if not p['correct']]
+                self.logger.info(f"✓ Improvement found! New best accuracy: {best_accuracy:.2%}")
+            else:
+                self.logger.info("✗ No improvement, keeping previous best")
+            
+            # Early stopping if we reach target performance
+            new_metrics = calculate_metrics(new_predictions)
+            if (new_accuracy >= accuracy_threshold and
+                new_metrics.get('recall_harmful', new_metrics.get('recall_1', 1.0)) >= recall_threshold and
+                new_metrics.get('precision_harmful', new_metrics.get('precision_1', 1.0)) >= precision_threshold):
+                self.logger.info("Target performance reached, stopping optimization")
+                break
+            
+            current_prompt = improved_prompt
+        
+        # Log optimization results
+        improvement = best_accuracy - initial_accuracy
+        self.logger.info(f"\nOptimization complete:")
+        self.logger.info(f"  Initial accuracy: {initial_accuracy:.2%}")
+        self.logger.info(f"  Final accuracy: {best_accuracy:.2%}")
+        self.logger.info(f"  Improvement: {improvement*100:+.2f}%")
+        self.logger.info(f"  Prompt changed: {best_prompt != initial_prompt}")
+        
+        return best_prompt, best_accuracy
     
     def run_fold(self, fold_num: int, train_data: List[Dict], 
                  val_data: List[Dict], test_data: List[Dict]) -> Dict:
@@ -197,7 +306,8 @@ class UnifiedCrossValidator:
         initial_prompt = self.get_prompt()
         
         # Optimize prompt if enabled
-        if self.config['prompt_optimization']['enabled'] and val_data:
+        textgrad_config = self.config.get('textgrad_optimization', {})
+        if textgrad_config.get('enabled', True) and val_data:
             optimized_prompt, val_accuracy = self.optimize_prompt(train_data, val_data, initial_prompt)
         else:
             optimized_prompt = initial_prompt
@@ -225,7 +335,7 @@ class UnifiedCrossValidator:
             'validation_accuracy': val_accuracy,
             'test_accuracy': test_accuracy,
             'metrics': metrics,
-            'predictions': predictions[:self.config['output']['max_predictions_to_save']]
+            'predictions': predictions[:self.config.get('output', {}).get('predictions', {}).get('max_to_save', 50)]
         }
         
         self.logger.info(f"Fold {fold_num} - Accuracy: {test_accuracy:.2%}, "
@@ -243,18 +353,26 @@ class UnifiedCrossValidator:
             prompt_key = "open_end"  # Map to prompt key
         elif self.task == "long_speech_detection":
             prompt_key = "long_speech"  # Map to prompt key
+        elif self.task == "pronoun_detection":
+            prompt_key = "use_pronoun"  # Map to prompt key
         
         prompts = self.config.get('prompts', {})
         if prompt_key in prompts:
             return prompts[prompt_key]['initial']
         else:
+            # Use the prompt from the detector if available
+            if self.task == "pronoun_detection" and self.task_type == "use_pronoun":
+                from src.detectors.use_pronoun import UsePronounDetector
+                detector = UsePronounDetector()
+                return detector.prompt
             self.logger.warning(f"No prompt configured for {prompt_key}")
             return "Classify the text."
     
     def create_stratified_folds(self, dataset: List[Dict]) -> List[List[Dict]]:
         """Create stratified k-folds"""
-        cv_config = self.config['cross_validation']
-        n_folds = cv_config['n_folds']
+        cv_config = self.config.get('cross_validation', {})
+        standard_config = cv_config.get('standard', {})
+        n_folds = standard_config.get('n_folds', 3)
         
         # Group by label
         label_groups = defaultdict(list)
@@ -278,10 +396,13 @@ class UnifiedCrossValidator:
     
     def run_cross_validation(self, dataset: List[Dict]) -> Dict:
         """Run full cross-validation"""
-        cv_config = self.config['cross_validation']
-        n_folds = cv_config['n_folds']
-        n_repeats = cv_config['n_repeats']
-        val_split = cv_config['validation_split_ratio']
+        cv_config = self.config.get('cross_validation', {})
+        
+        # Use standard config by default
+        standard_config = cv_config.get('standard', {})
+        n_folds = standard_config.get('n_folds', 3)
+        n_repeats = standard_config.get('n_repeats', 3)
+        val_split = cv_config.get('validation_split_ratio', 0.2)
         
         self.logger.info(f"Starting {n_folds}-fold cross-validation with {n_repeats} repeats")
         
@@ -292,7 +413,8 @@ class UnifiedCrossValidator:
             self.logger.info(f"\n=== REPEAT {repeat}/{n_repeats} ===")
             
             # Set random seed for reproducibility
-            random.seed(cv_config['random_seed_base'] + repeat)
+            random_seed_base = standard_config.get('random_seed_base', 42)
+            random.seed(random_seed_base + repeat)
             
             # Create stratified folds
             folds = self.create_stratified_folds(dataset)
@@ -424,8 +546,9 @@ class UnifiedCrossValidator:
         self.logger.info(f"Results saved to {output_path}")
         
         # Generate reports using UnifiedReportGenerator
-        reporter = UnifiedReportGenerator(results)
-        reporter.generate_all_reports(results_dir)
+        # reporter = UnifiedReportGenerator(results)
+        # reporter.generate_all_reports(results_dir)
+        self.logger.info("Report generation skipped (matplotlib not available)")
         
         # Save prompts
         self._save_prompts(results, results_dir)
@@ -486,14 +609,14 @@ def main():
     )
     parser.add_argument(
         '--task',
-        choices=['accommodation_speech', 'episode_detection', 'question_detection', 'long_speech_detection'],
-        default='accommodation_speech',
+        choices=['elderspeak', 'episode_detection', 'question_detection', 'long_speech_detection'],
+        default='elderspeak',
         help='Task to evaluate'
     )
     parser.add_argument(
         '--type',
         default='ToE',
-        help='Task type (e.g., ToE for accommodation_speech, episode_memory for episode_detection)'
+        help='Task type (e.g., ToE or collective for elderspeak, episode_memory for episode_detection)'
     )
     parser.add_argument(
         '--dataset',
@@ -533,7 +656,7 @@ def main():
               f"{agg_metrics['accuracy']['std']:.2%}")
     
     # Print relevant metrics based on task
-    if args.task == "accommodation_speech":
+    if args.task == "elderspeak":
         for metric in ['precision_harmful', 'recall_harmful', 'f1_harmful']:
             if metric in agg_metrics:
                 print(f"  {metric.replace('_', ' ').title()}: "

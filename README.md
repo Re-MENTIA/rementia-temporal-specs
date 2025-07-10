@@ -5,7 +5,9 @@ A comprehensive system for detecting problematic communication patterns in elder
 ## 🎯 Key Features
 
 ### Detection Capabilities
-1. **Accommodation Speech Detection**: Identifies inappropriate terms of endearment (elderspeak)
+1. **Elderspeak Detection** (2 subtypes):
+   - **Terms of Endearment**: Inappropriate pet names or baby talk (honey, sweetie, ちゃん suffix)
+   - **Collective Instruction**: Inappropriate use of "we/us" when giving instructions
 2. **Episode Memory Detection**: Detects questions requiring personal memory recall  
 3. **Open-End Question Detection**: Identifies questions needing elaborate responses
 4. **Long Speech Detection**: Identifies overly long or complex sentences that may be difficult to process
@@ -20,7 +22,9 @@ A comprehensive system for detecting problematic communication patterns in elder
 
 ## 📊 Performance
 
-- **Accommodation Speech**: ~85% accuracy
+- **Elderspeak Detection**:
+  - **Terms of Endearment**: ~85% accuracy
+  - **Collective Instruction**: 100% accuracy (F1: 1.000)
 - **Episode Memory**: ~98% accuracy  
 - **Open-End Question**: ~100% accuracy
 - **Long Speech**: 99% accuracy (F1: 0.990)
@@ -31,8 +35,9 @@ A comprehensive system for detecting problematic communication patterns in elder
 ├── config/
 │   └── config.yaml             # Main configuration file
 ├── datasets/
-│   ├── Elderspeak/            # Accommodation speech datasets
-│   │   └── ToE/              # Terms of Endearment
+│   ├── Elderspeak/            # Elderspeak detection datasets
+│   │   ├── ToE/              # Terms of Endearment
+│   │   └── collective/       # Collective Instruction
 │   ├── episode-open-end-Q/   # Episode memory & open-end datasets
 │   └── long-speech/          # Long speech detection dataset
 ├── examples/                  # Demo scripts
@@ -93,6 +98,8 @@ streamlit run src/app/streamlit_app.py
 python scripts/evaluate_all_detectors.py
 
 # Run specific cross-validation
+python scripts/run_unified_crossval.py --task elderspeak --type ToE
+python scripts/run_unified_crossval.py --task elderspeak --type collective
 python scripts/run_unified_crossval.py --task episode_detection --type episode_memory
 python scripts/run_unified_crossval.py --task long_speech_detection --type long_speech
 

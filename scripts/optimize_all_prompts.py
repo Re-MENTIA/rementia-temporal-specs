@@ -36,8 +36,10 @@ def load_dataset_for_detector(detector_name: str, config: Dict) -> List[Dict]:
     """Load dataset for a specific detector"""
     loader = DataLoader(config)
     
-    if detector_name == 'accommodation':
-        return loader.load_accommodation_speech_data()
+    if detector_name == 'terms_of_endearment':
+        return loader.load_terms_of_endearment_data()
+    elif detector_name == 'collective_instruction':
+        return loader.load_collective_instruction_data()
     elif detector_name == 'episode_memory':
         return loader.load_episode_memory_data()
     elif detector_name == 'open_end_question':

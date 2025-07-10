@@ -1,0 +1,470 @@
+[
+  {
+    "sentence": "これを飲んでください。",
+    "label": 1,
+    "language": "Japanese",
+    "context": "Healthcare - medication administration without specifying what 'this' is"
+  },
+  {
+    "sentence": "Take this three times a day.",
+    "label": 1,
+    "language": "English",
+    "context": "Healthcare - unclear medication instructions"
+  },
+  {
+    "sentence": "それを持ってきてください。あれも一緒に。",
+    "label": 1,
+    "language": "Japanese",
+    "context": "Daily care - multiple vague pronouns creating confusion"
+  },
+  {
+    "sentence": "Put that over there next to the other thing.",
+    "label": 1,
+    "language": "English",
+    "context": "Daily care - unclear spatial instructions"
+  },
+  {
+    "sentence": "彼女が来たら、彼に渡してください。",
+    "label": 1,
+    "language": "Japanese",
+    "context": "Social - unclear pronoun references without prior identification"
+  },
+  {
+    "sentence": "When she arrives, tell him about it.",
+    "label": 1,
+    "language": "English",
+    "context": "Social - multiple unclear pronoun references"
+  },
+  {
+    "sentence": "あそこに座って、これをやってください。",
+    "label": 1,
+    "language": "Japanese",
+    "context": "Activity - vague location and task instructions"
+  },
+  {
+    "sentence": "Go there and do this for me.",
+    "label": 1,
+    "language": "English",
+    "context": "Activity - completely vague instructions"
+  },
+  {
+    "sentence": "それが痛いですか？ここはどうですか？",
+    "label": 1,
+    "language": "Japanese",
+    "context": "Medical - unclear body part references"
+  },
+  {
+    "sentence": "Does it hurt when I do this?",
+    "label": 1,
+    "language": "English",
+    "context": "Medical - unclear action reference"
+  },
+  {
+    "sentence": "あれを着て、それを履いてください。",
+    "label": 1,
+    "language": "Japanese",
+    "context": "Dressing - unclear clothing items"
+  },
+  {
+    "sentence": "Wear that with these.",
+    "label": 1,
+    "language": "English",
+    "context": "Dressing - vague clothing instructions"
+  },
+  {
+    "sentence": "彼がそう言ってたから、あれをやめました。",
+    "label": 1,
+    "language": "Japanese",
+    "context": "Decision making - unclear person and action references"
+  },
+  {
+    "sentence": "They said to stop doing that thing we discussed.",
+    "label": 1,
+    "language": "English",
+    "context": "Decision making - vague subject and object"
+  },
+  {
+    "sentence": "こっちに来て、あれを見てください。",
+    "label": 1,
+    "language": "Japanese",
+    "context": "Movement - vague direction and object"
+  },
+  {
+    "sentence": "Come here and look at that.",
+    "label": 1,
+    "language": "English",
+    "context": "Movement - unclear location and object"
+  },
+  {
+    "sentence": "それじゃだめです。こうしてください。",
+    "label": 1,
+    "language": "Japanese",
+    "context": "Correction - unclear what's wrong and what to do"
+  },
+  {
+    "sentence": "Not like that, do it this way.",
+    "label": 1,
+    "language": "English",
+    "context": "Correction - vague correction instructions"
+  },
+  {
+    "sentence": "あの人がこれを持ってきました。",
+    "label": 1,
+    "language": "Japanese",
+    "context": "Delivery - unclear person and item"
+  },
+  {
+    "sentence": "Someone left this for you.",
+    "label": 1,
+    "language": "English",
+    "context": "Delivery - vague person and item"
+  },
+  {
+    "sentence": "そこの引き出しにあれを入れてください。",
+    "label": 1,
+    "language": "Japanese",
+    "context": "Storage - vague location and item"
+  },
+  {
+    "sentence": "Put it in that drawer over there.",
+    "label": 1,
+    "language": "English",
+    "context": "Storage - unclear item and location"
+  },
+  {
+    "sentence": "これをやってから、あっちに行きます。",
+    "label": 1,
+    "language": "Japanese",
+    "context": "Schedule - vague task and destination"
+  },
+  {
+    "sentence": "After this, we'll go there.",
+    "label": 1,
+    "language": "English",
+    "context": "Schedule - unclear activity and location"
+  },
+  {
+    "sentence": "彼女たちがそれを言ってました。",
+    "label": 1,
+    "language": "Japanese",
+    "context": "Communication - unclear speakers and message"
+  },
+  {
+    "sentence": "They were talking about that earlier.",
+    "label": 1,
+    "language": "English",
+    "context": "Communication - vague subject and topic"
+  },
+  {
+    "sentence": "ここが痛いなら、あれを使ってください。",
+    "label": 1,
+    "language": "Japanese",
+    "context": "Pain relief - vague body part and remedy"
+  },
+  {
+    "sentence": "If this bothers you, try that instead.",
+    "label": 1,
+    "language": "English",
+    "context": "Problem solving - unclear issue and solution"
+  },
+  {
+    "sentence": "あちらの方とこちらの方、どちらがいいですか？",
+    "label": 1,
+    "language": "Japanese",
+    "context": "Choice - unclear options"
+  },
+  {
+    "sentence": "Do you prefer this one or that one?",
+    "label": 1,
+    "language": "English",
+    "context": "Choice - vague alternatives"
+  },
+  {
+    "sentence": "それを済ませてから、こっちをやりましょう。",
+    "label": 1,
+    "language": "Japanese",
+    "context": "Task sequence - unclear tasks"
+  },
+  {
+    "sentence": "Finish that before starting this.",
+    "label": 1,
+    "language": "English",
+    "context": "Task sequence - vague task order"
+  },
+  {
+    "sentence": "田中さん、血圧の薬を飲む時間です。",
+    "label": 0,
+    "language": "Japanese",
+    "context": "Healthcare - clear person and medication identification"
+  },
+  {
+    "sentence": "Mr. Johnson, please take your diabetes medication now.",
+    "label": 0,
+    "language": "English",
+    "context": "Healthcare - specific person and medicine"
+  },
+  {
+    "sentence": "青いセーターを着て、黒いズボンを履いてください。",
+    "label": 0,
+    "language": "Japanese",
+    "context": "Dressing - specific clothing items"
+  },
+  {
+    "sentence": "Please wear the blue cardigan with your gray pants.",
+    "label": 0,
+    "language": "English",
+    "context": "Dressing - clear clothing description"
+  },
+  {
+    "sentence": "佐藤先生が午後2時に診察に来ます。",
+    "label": 0,
+    "language": "Japanese",
+    "context": "Schedule - specific person and time"
+  },
+  {
+    "sentence": "Dr. Smith will visit at 3 PM for your checkup.",
+    "label": 0,
+    "language": "English",
+    "context": "Schedule - clear professional and appointment"
+  },
+  {
+    "sentence": "食堂の椅子に座って昼食を待ってください。",
+    "label": 0,
+    "language": "Japanese",
+    "context": "Location - specific place and action"
+  },
+  {
+    "sentence": "Please sit in the dining room chair near the window.",
+    "label": 0,
+    "language": "English",
+    "context": "Location - clear spatial instructions"
+  },
+  {
+    "sentence": "左膝が痛いですか？湿布を貼りましょう。",
+    "label": 0,
+    "language": "Japanese",
+    "context": "Medical - specific body part and treatment"
+  },
+  {
+    "sentence": "Is your right shoulder hurting? Let me apply the heating pad.",
+    "label": 0,
+    "language": "English",
+    "context": "Medical - clear body part and remedy"
+  },
+  {
+    "sentence": "山田さんがお花を持ってきてくれました。",
+    "label": 0,
+    "language": "Japanese",
+    "context": "Social - specific person and item"
+  },
+  {
+    "sentence": "Your daughter Sarah brought these roses for you.",
+    "label": 0,
+    "language": "English",
+    "context": "Social - clear person identification"
+  },
+  {
+    "sentence": "トイレは廊下の突き当たり右側です。",
+    "label": 0,
+    "language": "Japanese",
+    "context": "Direction - specific location description"
+  },
+  {
+    "sentence": "The bathroom is down the hall, second door on the left.",
+    "label": 0,
+    "language": "English",
+    "context": "Direction - clear spatial guidance"
+  },
+  {
+    "sentence": "今朝の体温は36.5度でした。",
+    "label": 0,
+    "language": "Japanese",
+    "context": "Health data - specific measurement"
+  },
+  {
+    "sentence": "Your blood pressure reading is 120 over 80.",
+    "label": 0,
+    "language": "English",
+    "context": "Health data - clear vital signs"
+  },
+  {
+    "sentence": "歯ブラシを使って歯を磨きましょう。",
+    "label": 0,
+    "language": "Japanese",
+    "context": "Hygiene - specific tool and action"
+  },
+  {
+    "sentence": "Use the electric toothbrush to clean your teeth.",
+    "label": 0,
+    "language": "English",
+    "context": "Hygiene - clear implement and task"
+  },
+  {
+    "sentence": "朝食は8時に食堂で用意します。",
+    "label": 0,
+    "language": "Japanese",
+    "context": "Meal - specific time and location"
+  },
+  {
+    "sentence": "Dinner will be served at 6 PM in the main dining area.",
+    "label": 0,
+    "language": "English",
+    "context": "Meal - clear schedule and place"
+  },
+  {
+    "sentence": "車椅子を押してリビングまで行きましょう。",
+    "label": 0,
+    "language": "Japanese",
+    "context": "Mobility - specific equipment and destination"
+  },
+  {
+    "sentence": "I'll help you walk with your walker to the garden.",
+    "label": 0,
+    "language": "English",
+    "context": "Mobility - clear assistance and goal"
+  },
+  {
+    "sentence": "メガネは寝室のテーブルの上にあります。",
+    "label": 0,
+    "language": "Japanese",
+    "context": "Item location - specific object and place"
+  },
+  {
+    "sentence": "Your reading glasses are on the nightstand.",
+    "label": 0,
+    "language": "English",
+    "context": "Item location - clear object placement"
+  },
+  {
+    "sentence": "インスリン注射は食事の前に打ちます。",
+    "label": 0,
+    "language": "Japanese",
+    "context": "Medical procedure - specific treatment timing"
+  },
+  {
+    "sentence": "The nurse will check your blood sugar before lunch.",
+    "label": 0,
+    "language": "English",
+    "context": "Medical procedure - clear professional and task"
+  },
+  {
+    "sentence": "明日は病院で検査があります。",
+    "label": 0,
+    "language": "Japanese",
+    "context": "Neutral information - no instruction"
+  },
+  {
+    "sentence": "The weather forecast shows rain this afternoon.",
+    "label": 0,
+    "language": "English",
+    "context": "Neutral information - no instruction"
+  },
+  {
+    "sentence": "桜の季節が近づいてきましたね。",
+    "label": 0,
+    "language": "Japanese",
+    "context": "Neutral observation - no instruction"
+  },
+  {
+    "sentence": "The flowers in the garden are blooming beautifully.",
+    "label": 0,
+    "language": "English",
+    "context": "Neutral observation - no instruction"
+  },
+  {
+    "sentence": "息子さんは医者になったそうですね。",
+    "label": 0,
+    "language": "Japanese",
+    "context": "Neutral conversation - no instruction"
+  },
+  {
+    "sentence": "Your grandchildren are visiting next week.",
+    "label": 0,
+    "language": "English",
+    "context": "Neutral information - no instruction"
+  },
+  {
+    "sentence": "この写真は50年前のものです。",
+    "label": 0,
+    "language": "Japanese",
+    "context": "Neutral statement - no instruction"
+  },
+  {
+    "sentence": "This photograph was taken at your wedding.",
+    "label": 0,
+    "language": "English",
+    "context": "Neutral statement - no instruction"
+  },
+  {
+    "sentence": "テレビで野球の試合をやっています。",
+    "label": 0,
+    "language": "Japanese",
+    "context": "Neutral information - no instruction"
+  },
+  {
+    "sentence": "The news will be on in fifteen minutes.",
+    "label": 0,
+    "language": "English",
+    "context": "Neutral information - no instruction"
+  },
+  {
+    "sentence": "今日は気温が高いですね。",
+    "label": 0,
+    "language": "Japanese",
+    "context": "Neutral observation - no instruction"
+  },
+  {
+    "sentence": "The library has new books this month.",
+    "label": 0,
+    "language": "English",
+    "context": "Neutral information - no instruction"
+  },
+  {
+    "sentence": "隣の部屋で音楽会があります。",
+    "label": 0,
+    "language": "Japanese",
+    "context": "Neutral information - no instruction"
+  },
+  {
+    "sentence": "The cafeteria is serving apple pie today.",
+    "label": 0,
+    "language": "English",
+    "context": "Neutral information - no instruction"
+  },
+  {
+    "sentence": "郵便物が届いています。",
+    "label": 0,
+    "language": "Japanese",
+    "context": "Neutral information - no instruction"
+  },
+  {
+    "sentence": "Your favorite TV show starts at eight.",
+    "label": 0,
+    "language": "English",
+    "context": "Neutral information - no instruction"
+  },
+  {
+    "sentence": "今年も健康に過ごせますように。",
+    "label": 0,
+    "language": "Japanese",
+    "context": "Neutral well-wishing - no instruction"
+  },
+  {
+    "sentence": "Happy birthday! Hope you have a wonderful day.",
+    "label": 0,
+    "language": "English",
+    "context": "Neutral greeting - no instruction"
+  },
+  {
+    "sentence": "私もその本を読みました。面白かったです。",
+    "label": 0,
+    "language": "Japanese",
+    "context": "Neutral conversation with clear pronoun reference"
+  },
+  {
+    "sentence": "I also enjoyed the movie we watched yesterday.",
+    "label": 0,
+    "language": "English",
+    "context": "Neutral statement with clear time reference"
+  }
+]

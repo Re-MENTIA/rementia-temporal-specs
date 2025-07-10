@@ -16,10 +16,25 @@ class DataLoader:
         self.config = config
         self.logger = logging.getLogger(self.__class__.__name__)
         
-    def load_accommodation_speech_data(self, type_key: str = "ToE") -> List[Dict]:
-        """Load accommodation speech dataset"""
-        task_config = self.config['tasks']['accommodation_speech']
+    def load_terms_of_endearment_data(self, type_key: str = "ToE") -> List[Dict]:
+        """Load terms of endearment dataset"""
+        task_config = self.config['tasks']['elderspeak']
         type_config = task_config['types'][type_key]
+        
+        # Build path
+        base_path = Path(task_config['base_path'])
+        data_path = base_path / type_config['path']
+        
+        # Load data
+        data = self._load_json(data_path)
+        
+        # Normalize
+        return self._normalize_dataset(data, type_config)
+        
+    def load_collective_instruction_data(self) -> List[Dict]:
+        """Load collective instruction dataset"""
+        task_config = self.config['tasks']['elderspeak']
+        type_config = task_config['types']['collective']
         
         # Build path
         base_path = Path(task_config['base_path'])

@@ -12,6 +12,15 @@ sys.path.append(str(Path(__file__).parent.parent.parent))
 
 from src.workflow import DetectionPipeline
 
+# Import pages
+try:
+    from src.app.pages.conversation_analyzer import conversation_analyzer_page
+except ImportError:
+    # Fallback if relative imports fail
+    import sys
+    sys.path.append(str(Path(__file__).parent))
+    from pages.conversation_analyzer import conversation_analyzer_page
+
 
 # Page configuration
 st.set_page_config(
@@ -108,8 +117,8 @@ def display_detector_result(name: str, detection: dict):
     """Display individual detector result"""
     # Define friendly names and descriptions
     detector_info = {
-        'accommodation': {
-            'name': 'Accommodation Speech',
+        'terms_of_endearment': {
+            'name': 'Terms of Endearment',
             'icon': '💬',
             'description': 'Detects inappropriate terms of endearment'
         },
@@ -127,6 +136,16 @@ def display_detector_result(name: str, detection: dict):
             'name': 'Long Speech',
             'icon': '📏',
             'description': 'Detects overly long or complex sentences'
+        },
+        'collective_instruction': {
+            'name': 'Collective Instruction',
+            'icon': '👥',
+            'description': 'Detects inappropriate use of "we/us" in instructions'
+        },
+        'use_pronoun': {
+            'name': 'Vague Pronoun Usage',
+            'icon': '🔤',
+            'description': 'Detects vague pronoun usage that may confuse'
         }
     }
     
@@ -150,8 +169,8 @@ def display_detector_result(name: str, detection: dict):
             st.caption(info['description'])
 
 
-def main():
-    """Main application"""
+def text_analyzer_page():
+    """Text analyzer page"""
     # Header
     st.title("🏥 Eldercare Communication Analyzer")
     st.markdown(
@@ -165,12 +184,14 @@ def main():
         st.header("About")
         st.markdown(
             """
-            This system analyzes text across four dimensions:
+            This system analyzes text across six dimensions:
             
-            1. **Accommodation Speech**: Inappropriate language patterns
-            2. **Episode Memory**: Questions requiring personal memory
-            3. **Open-End Questions**: Questions needing elaborate responses
-            4. **Long Speech**: Overly long or complex sentences
+            1. **Terms of Endearment**: Inappropriate pet names or baby talk
+            2. **Collective Instruction**: Inappropriate use of "we/us" in commands
+            3. **Episode Memory**: Questions requiring personal memory
+            4. **Open-End Questions**: Questions needing elaborate responses
+            5. **Long Speech**: Overly long or complex sentences
+            6. **Vague Pronoun Usage**: Unclear pronoun references (this/that/これ/それ)
             
             **Risk Levels:**
             - 🟢 **Low**: Safe communication
@@ -186,8 +207,12 @@ def main():
             "Episode memory question": "昨日の夕食で何を食べましたか？",
             "Open-ended + Episode": "先週の旅行はどうでしたか？詳しく聞かせてください。",
             "Closed preference": "コーヒーと紅茶、どちらがお好きですか？",
+            "Collective instruction": "さあ、一緒にお薬を飲みましょうね。",
+            "Direct instruction": "お薬を飲んでください。",
             "Long complex sentence": "今日は晴れて気温も高いので帽子をかぶって水分をしっかり取りませんか？",
-            "Short simple": "水飲む？"
+            "Short simple": "水飲む？",
+            "Vague pronoun": "これを全部飲んでから、そこに座ってください。",
+            "Clear reference": "お薬を全部飲んでから、椅子に座ってください。"
         }
         
         selected_example = st.selectbox(
@@ -288,6 +313,20 @@ def main():
         "Built with ❤️ for improving eldercare communication. "
         "Based on research in cognitive accessibility."
     )
+
+
+def main():
+    """Main application with page navigation"""
+    # Sidebar navigation
+    page = st.sidebar.selectbox(
+        "Choose a tool",
+        ["Text Analyzer", "Conversation History Analyzer"]
+    )
+    
+    if page == "Text Analyzer":
+        text_analyzer_page()
+    else:
+        conversation_analyzer_page()
 
 
 if __name__ == "__main__":
